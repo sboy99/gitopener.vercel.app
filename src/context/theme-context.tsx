@@ -28,7 +28,7 @@ const ThemeProvider: FC<ThemeProps> = ({ children, className, ...props }) => {
   const [mode, setMode] = useState<Mode>(`light`);
 
   function isSystemHasDarkTheme(): boolean {
-    return window.matchMedia('prefers-color-scheme:dark`').matches;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 
   function mediaQueryListener(e: MediaQueryListEvent) {
@@ -41,7 +41,9 @@ const ThemeProvider: FC<ThemeProps> = ({ children, className, ...props }) => {
     }
   }
   useEffect(() => {
-    const darkModeMediaQuery = window.matchMedia(`prefers-color-scheme:dark`);
+    const darkModeMediaQuery = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    );
     const isTokenFound = window.localStorage.getItem('prefers-theme');
     if (isTokenFound) {
       if (isTokenFound === 'dark') {
@@ -56,8 +58,6 @@ const ThemeProvider: FC<ThemeProps> = ({ children, className, ...props }) => {
         setMode('dark');
         setIsDark(true);
       } else {
-        console.log(`theme is light`);
-
         setMode('light');
         setIsDark(false);
       }
