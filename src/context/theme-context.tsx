@@ -26,6 +26,11 @@ const ThemeProvider: FC<ThemeProps> = ({ children, className, ...props }) => {
   const [isDark, setIsDark] = useState<boolean>(false);
   const [isThemeChanged, setIsThemeChanged] = useState<number>(0);
   const [mode, setMode] = useState<Mode>(`light`);
+
+  function isSystemHasDarkTheme(): boolean {
+    return window.matchMedia('prefers-color-scheme:dark`').matches;
+  }
+
   function mediaQueryListener(e: MediaQueryListEvent) {
     if (e.matches) {
       setMode(`dark`);
@@ -37,7 +42,6 @@ const ThemeProvider: FC<ThemeProps> = ({ children, className, ...props }) => {
   }
   useEffect(() => {
     const darkModeMediaQuery = window.matchMedia(`prefers-color-scheme:dark`);
-
     const isTokenFound = window.localStorage.getItem('prefers-theme');
     if (isTokenFound) {
       if (isTokenFound === 'dark') {
@@ -47,7 +51,18 @@ const ThemeProvider: FC<ThemeProps> = ({ children, className, ...props }) => {
         setMode('light');
         setIsDark(false);
       }
-    } else darkModeMediaQuery.addEventListener('change', mediaQueryListener);
+    } else {
+      if (isSystemHasDarkTheme()) {
+        setMode('dark');
+        setIsDark(true);
+      } else {
+        console.log(`theme is light`);
+
+        setMode('light');
+        setIsDark(false);
+      }
+      darkModeMediaQuery.addEventListener('change', mediaQueryListener);
+    }
     return () =>
       darkModeMediaQuery.removeEventListener('change', mediaQueryListener);
 
